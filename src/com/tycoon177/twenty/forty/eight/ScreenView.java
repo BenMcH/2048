@@ -3,25 +3,20 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Arrays;
 import java.util.Random;
 
 import com.tycoon177.engine.Game;
 import com.tycoon177.engine.Screen;
 
+@SuppressWarnings("serial")
 public class ScreenView extends Screen {
     public static int LEFT = 0, DOWN = 1, RIGHT = 2, UP = 3;
 
     public ScreenView(Game game) {
 	super(game);
-	// TODO Auto-generated constructor stub
     }
 
-    public static int[][] sq;
-    /**
-			 * 
-			 */
-    private static final long serialVersionUID = -4989947253742922676L;
+    public static int[][] grid;
 
     @Override
     public void onDraw(Graphics g2) {
@@ -31,8 +26,8 @@ public class ScreenView extends Screen {
 	g.fillRect(600, 0, 5, 800);
 	g.fillRect(0, 200, 800, 5);
 	g.fillRect(0, 400, 800, 5);
-	g.fillRect(0, 600, 800, 5);
-	g.setFont(new Font("default", Font.BOLD, 16));
+	g.fillRect(0, 600, 800, 5); //Draw the grid
+	g.setFont(new Font("default", Font.BOLD, 16)); //Set a bold font and then draw the numbers
 	drawNums(g);
 
     }
@@ -40,11 +35,11 @@ public class ScreenView extends Screen {
     private void drawNums(Graphics2D g) {
 	for (int i = 0; i < 4; i++)
 	    for (int j = 0; j < 4; j++)
-		if (sq[i][j] > 0) {
-		    g.setColor(getColor(sq[i][j]));
-		    g.fillRect(7 + i * 200, 5 + j * 200, 190, 190);
+		if (grid[i][j] > 0) {
+		    g.setColor(getColor(grid[i][j]));
+		    g.fillRect(7 + i * 200, 5 + j * 200, 190, 190);//Fill the background with a color of choice, relating to the value
 		    g.setColor(Color.black);
-		    g.drawString(sq[i][j] + "", i * 200 + 100, j * 200 + 100);
+		    g.drawString(grid[i][j] + "", i * 200 + 100, j * 200 + 100);
 		}
 
     }
@@ -53,8 +48,6 @@ public class ScreenView extends Screen {
 	Color color;
 	switch (i) {
 	case 2:
-	    color = Color.WHITE;
-	    break;
 	case 4:
 	    color = Color.WHITE;
 	    break;
@@ -94,69 +87,66 @@ public class ScreenView extends Screen {
 
     @Override
     public void onCreate() {
-	sq = new int[4][4];
+	grid = new int[4][4];
 	this.setFocusable(true);
-	sq[new Random(System.currentTimeMillis()).nextInt(4)][new Random(
-		System.currentTimeMillis()).nextInt(4)] = 2;
+	grid[new Random(System.nanoTime()).nextInt(4)][new Random(
+		System.nanoTime()).nextInt(4)] = 2; //Place the first integer, a two, onto the board
     }
 
     public static void move(int direction) {
-	// 0->left 1->down 2->right 3->up
-	int[][] bits = new int[sq.length][sq[0].length];
-	int[][] a1 = sq.clone();
+	int[][] movedTiles = new int[grid.length][grid[0].length];
+	int[][] newBoard = grid.clone();
 	for (int i = 0; i < direction; i++)
-	    a1 = rotateDirection(a1);
-	for (int i = 0; i < sq.length; i++)
-	    for (int j = 0; j < sq[0].length; j++)
-		if (a1[i][j] != 0)
-		    bits[i][j] = 1;
-	boolean moved = false;
-	for (int n = 0; n < 4; n++)
-	    for (int i = 1; i < 4; i++)
+	    newBoard = rotate(newBoard); //Rotate the grid so that the direction in which it is being moved is on the left
+	for (int i = 0; i < grid.length; i++)
+	    for (int j = 0; j < grid[0].length; j++)
+		if (newBoard[i][j] != 0)
+		    movedTiles[i][j] = 1;
+	boolean moved = false; //A flag to know if any piece has moved. If it has, another number will be added later.
+	for (int n = 0; n < 4; n++) //Make sure the tiles can travel the entire board
+	    for (int i = 1; i < 4; i++) 
 		for (int j = 0; j < 4; j++) {
-		    if (a1[i][j] != 0
-			    && (a1[i - 1][j] == 0 || a1[i - 1][j] == a1[i][j])) {
-
-			if (a1[i - 1][j] == a1[i][j] && bits[i][j] == 1
-				&& bits[i - 1][j] == 1) {
-			    a1[i - 1][j] *= 2;
-			    a1[i][j] = 0;
-			    bits[i - 1][j] = 2;
+		    if (newBoard[i][j] != 0
+			    && (newBoard[i - 1][j] == 0 || newBoard[i - 1][j] == newBoard[i][j])) { //Make sure the tile is able to move
+			if (newBoard[i - 1][j] == newBoard[i][j] && movedTiles[i][j] == 1
+				&& movedTiles[i - 1][j] == 1) { //Handles movement and combining of tiles
+			    newBoard[i - 1][j] *= 2;
+			    newBoard[i][j] = 0;
+			    movedTiles[i - 1][j] = 2;
 			    moved = true;
-			} else if (a1[i - 1][j] == 0) {
-			    a1[i - 1][j] = a1[i][j];
-			    bits[i - 1][j] = bits[i][j];
-			    bits[i][j] = 0;
-			    a1[i][j] = 0;
+			} else if (newBoard[i - 1][j] == 0) { //Handles plain movement of a tile
+			    newBoard[i - 1][j] = newBoard[i][j];
+			    movedTiles[i - 1][j] = movedTiles[i][j];
+			    movedTiles[i][j] = 0;
+			    newBoard[i][j] = 0;
 			    moved = true;
 			}
 		    }
 		}
 	if(!moved)return; //Don't waste time on any of this if nothing changed
 	Random r = new Random();
-	boolean a = false;
-	while (!a && moved) {
-	    int a2 = r.nextInt(4), b = r.nextInt(4);
-	    if (a1[a2][b] == 0) {
-		a1[a2][b] = r.nextInt(100) > 75 ? 4 : 2;
-		a = true;
+	boolean tilePlaced = false;
+	while (!tilePlaced && moved) { 
+	    int x = r.nextInt(4), y = r.nextInt(4);
+	    if (newBoard[x][y] == 0) {
+		newBoard[x][y] = r.nextInt(100) > 75 ? 4 : 2;
+		tilePlaced = true;
 	    }
 	}
 	for (int i = 0; i < 4 - direction; i++)
-	    a1 = rotateDirection(a1);
-	sq = a1.clone();
+	    newBoard = rotate(newBoard); //Rotate the grid back to its original orientation
+	grid = newBoard.clone(); //set the grid to the new, edited version.
     }
 
-    public static int[][] rotateDirection(int[][] grid) {
-	int[][] rotated = new int[grid.length][grid[0].length];
+    public static int[][] rotate(int[][] grid) { //Rotates an NxM array and returns it in the fasion of an MxN array
+	int[][] rotated = new int[grid[0].length][grid.length]; //Create a new array of the same size to store the rotated values
 	for (int i = 0; i < grid.length; i++)
 	    for (int j = 0; j < grid[0].length; j++) {
-		rotated[i][j] = grid[j][grid.length - 1 - i];
+		rotated[i][j] = grid[j][grid.length - 1 - i]; 
 	    }
 	return rotated;
     }
 
     @Override
-    public void onTick(double updateTime) {
-    }
+    public void onTick(double updateTime) {} //Required because of the abstract implementation in the game engine.
 }

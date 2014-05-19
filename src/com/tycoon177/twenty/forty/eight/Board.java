@@ -9,10 +9,10 @@ public class Board extends Game {
 		super(title, width, height);	
 	}
 	public static void main(String[]a){
-		Board b = new Board("2048", 800, 800);
-		Screen s = new ScreenView(b);
-		b.getFrame().setFocusable(true);
-		b.getFrame().addKeyListener(new KeyListener(){
+		Board board = new Board("2048", 800, 800);
+		Screen screen = new ScreenView(board);
+		board.getFrame().setFocusable(true);
+		board.getFrame().addKeyListener(new KeyListener(){
 			@Override
 			public void keyTyped(KeyEvent e) {}
 			@Override
@@ -25,7 +25,7 @@ public class Board extends Game {
 			@Override
 			public void keyReleased(KeyEvent e) {}
 		});
-		b.setScreen(s);
-		b.getFrame().setVisible(true);
+		board.setScreen(screen);
+		board.getFrame().setVisible(true);
 	}
 }
