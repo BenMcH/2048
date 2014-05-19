@@ -10,6 +10,7 @@ public class Board extends Game {
 	}
 	public static void main(String[]a){
 		Board board = new Board("2048", 800, 800);
+		
 		Screen screen = new ScreenView(board);
 		board.getFrame().setFocusable(true);
 		board.getFrame().addKeyListener(new KeyListener(){

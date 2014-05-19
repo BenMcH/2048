@@ -17,6 +17,7 @@ public class ScreenView extends Screen {
 	
 	public ScreenView(Game game) {
 		super(game);
+		setOnTickUsed(false);
 	}
 	
 	public static int[][] grid;
