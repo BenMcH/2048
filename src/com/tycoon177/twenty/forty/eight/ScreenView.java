@@ -56,7 +56,7 @@ public class ScreenView extends Screen {
 		Color color;
 		switch (i) {
 			case 2:
-				color = Color.WHITE;
+				color = new Color(245,236,171);
 				break;
 			case 4:
 				color = new Color(230,230,230);
