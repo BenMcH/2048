@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.Random;
 
-import com.tater.engine.Game;
-import com.tater.engine.Screen;
+import com.tycoon177.engine.Game;
+import com.tycoon177.engine.Screen;
 
 public class ScreenView extends Screen {
     public static int LEFT = 0, DOWN = 1, RIGHT = 2, UP = 3;

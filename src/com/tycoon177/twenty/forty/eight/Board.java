@@ -2,8 +2,8 @@ package com.tycoon177.twenty.forty.eight;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import com.tater.engine.Game;
-import com.tater.engine.Screen;
+import com.tycoon177.engine.Game;
+import com.tycoon177.engine.Screen;
 public class Board extends Game {
 	public Board(String title, int width, int height) {
 		super(title, width, height);	
